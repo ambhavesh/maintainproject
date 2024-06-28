@@ -1,0 +1,56 @@
+<mvc:View controllerName="maintainproject.controller.View1"
+    xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
+    xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:filterbar="sap.ui.comp.filterbar">
+    <Page id="page" title="{i18n>title}">
+        <content>
+            <filterbar:FilterBar id="fBar" persistencyKey="myPersKey" useToolbar="false" showClearOnFB="true" clear="onClear" search="onSearch"
+		        reset="onReset">
+                <filterbar:filterGroupItems>
+                    <filterbar:FilterGroupItem groupName="G1" name="Project" label="Select Project" visibleInFilterBar="true">
+                        <filterbar:control>
+                            <ComboBox items="{ManageProject>/AllProject}"  placeholder="Enter Project" id="cbLicenseId" selectionChange="onProjectChange">
+                                <core:Item key="{ManageProject>PRJ_ID}" text="{ManageProject>PRJ_NAME}"/>
+                            </ComboBox>
+                        </filterbar:control>
+                    </filterbar:FilterGroupItem>
+                </filterbar:filterGroupItems>
+	        </filterbar:FilterBar>
+            <Table id="projectTable" class="sapUiResponsiveContentPadding" items="{ManageProject>/ProjectLineItems}" growing="true"
+		growingThreshold="10" mode="MultiSelect" selectionChange="onSelectionChange" updateFinished="onUpdateFinished">
+		<headerToolbar>
+			<OverflowToolbar>
+				<!-- <Title text="{i18n>countTitle} ({EmployeeLicenseAdmin>/iCount})"/> -->
+				<ToolbarSpacer/>
+				<Button text="Delete" icon="sap-icon://delete" type="Emphasized" press="onDelete"/>
+				<Button text="Create" icon="sap-icon://add" type="Emphasized" press="onCreate"/>
+			</OverflowToolbar>
+		</headerToolbar>
+		<columns>
+			<Column>
+				<Text text="Project Id"/>
+			</Column>
+			<Column>
+				<Text text="Project Name"/>
+			</Column>
+			<Column>
+				<Text text="Project Code"/>
+			</Column>
+			<Column>
+				<Text text="Project Status"/>
+			</Column>
+		</columns>
+		<items>
+			<ColumnListItem>
+				<cells>
+					<Text text="{ManageProject>PRJ_ID}"/>
+					<Text text="{ManageProject>PRJ_NAME}"/>
+					<Text text="{ManageProject>PRJ_CODE}"/>
+                    <Text text="{ManageProject>PRJ_STATUS}"/>
+					
+				</cells>
+			</ColumnListItem>
+		</items>
+	</Table>
+        </content>
+    </Page>
+</mvc:View>

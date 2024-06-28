@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:sap="http://www.sap.com/Protocols/SAPData">
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Common.xml" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Alias="Common" Namespace="com.sap.vocabularies.Common.v1"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.xml" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Alias="Core" Namespace="Org.OData.Core.V1"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/UI.xml" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Alias="UI" Namespace="com.sap.vocabularies.UI.v1"/>
+    </edmx:Reference>
+    <edmx:DataServices m:DataServiceVersion="2.0">
+        <Schema Namespace="zmanageproject.srv.service.ZMANAGEPROJECTSRV" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+            <EntityContainer Name="EntityContainer" m:IsDefaultEntityContainer="true">
+                <EntitySet Name="PROJECTS" EntityType="zmanageproject.srv.service.ZMANAGEPROJECTSRV.PROJECTS"/>
+                <EntitySet Name="TASKS" EntityType="zmanageproject.srv.service.ZMANAGEPROJECTSRV.TASKS"/>
+                <EntitySet Name="ORGANISATIONS" EntityType="zmanageproject.srv.service.ZMANAGEPROJECTSRV.ORGANISATIONS"/>
+                <EntitySet Name="EMPLOYEES" EntityType="zmanageproject.srv.service.ZMANAGEPROJECTSRV.EMPLOYEES"/>
+                <EntitySet Name="MODULES" EntityType="zmanageproject.srv.service.ZMANAGEPROJECTSRV.MODULES"/>
+                <FunctionImport Name="readProject" ReturnType="zmanageproject.srv.service.ZMANAGEPROJECTSRV.return_zmanageproject_srv_service_ZMANAGEPROJECTSRV_readProject" m:HttpMethod="GET">
+                    <Parameter Name="PRJ_ID" Type="Edm.String" Mode="In" Nullable="true"/>
+                </FunctionImport>
+                <AssociationSet Name="TASKS_PRJ_ID" Association="zmanageproject.srv.service.ZMANAGEPROJECTSRV.TASKS_PRJ_ID">
+                    <End Role="TASKS" EntitySet="TASKS"/>
+                    <End Role="PROJECTS" EntitySet="PROJECTS"/>
+                </AssociationSet>
+                <AssociationSet Name="EMPLOYEES_PRJ_ID" Association="zmanageproject.srv.service.ZMANAGEPROJECTSRV.EMPLOYEES_PRJ_ID">
+                    <End Role="EMPLOYEES" EntitySet="EMPLOYEES"/>
+                    <End Role="PROJECTS" EntitySet="PROJECTS"/>
+                </AssociationSet>
+                <AssociationSet Name="EMPLOYEES_ORG_ID" Association="zmanageproject.srv.service.ZMANAGEPROJECTSRV.EMPLOYEES_ORG_ID">
+                    <End Role="EMPLOYEES" EntitySet="EMPLOYEES"/>
+                    <End Role="ORGANISATIONS" EntitySet="ORGANISATIONS"/>
+                </AssociationSet>
+            </EntityContainer>
+            <EntityType Name="PROJECTS">
+                <Key>
+                    <PropertyRef Name="PRJ_ID"/>
+                </Key>
+                <Property Name="createdAt" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="createdBy" Type="Edm.String" MaxLength="255"/>
+                <Property Name="modifiedAt" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="modifiedBy" Type="Edm.String" MaxLength="255"/>
+                <Property Name="PRJ_ID" Type="Edm.String" Nullable="false"/>
+                <Property Name="PRJ_NAME" Type="Edm.String"/>
+                <Property Name="PRJ_CODE" Type="Edm.String"/>
+                <Property Name="PRJ_STATUS" Type="Edm.String"/>
+                <Property Name="PRJ_BUDGET" Type="Edm.Int32"/>
+                <Property Name="PRJ_DURATION" Type="Edm.String"/>
+                <NavigationProperty Name="EMP_ID" Relationship="zmanageproject.srv.service.ZMANAGEPROJECTSRV.EMPLOYEES_PRJ_ID" FromRole="PROJECTS" ToRole="EMPLOYEES"/>
+                <NavigationProperty Name="TASK_ID" Relationship="zmanageproject.srv.service.ZMANAGEPROJECTSRV.TASKS_PRJ_ID" FromRole="PROJECTS" ToRole="TASKS"/>
+            </EntityType>
+            <EntityType Name="TASKS">
+                <Key>
+                    <PropertyRef Name="TASK_ID"/>
+                </Key>
+                <Property Name="TASK_ID" Type="Edm.String" Nullable="false"/>
+                <Property Name="TASK_NAME" Type="Edm.String"/>
+                <Property Name="TASK_DESC" Type="Edm.String"/>
+                <NavigationProperty Name="PRJ_ID" Relationship="zmanageproject.srv.service.ZMANAGEPROJECTSRV.TASKS_PRJ_ID" FromRole="TASKS" ToRole="PROJECTS"/>
+                <Property Name="PRJ_ID_PRJ_ID" Type="Edm.String"/>
+            </EntityType>
+            <EntityType Name="ORGANISATIONS">
+                <Key>
+                    <PropertyRef Name="ORG_ID"/>
+                </Key>
+                <Property Name="ORG_ID" Type="Edm.String" Nullable="false"/>
+                <Property Name="ORG_NAME" Type="Edm.String"/>
+                <Property Name="ORG_CODE" Type="Edm.String"/>
+                <Property Name="ORG_RATING" Type="Edm.Int32"/>
+                <NavigationProperty Name="EMP_ID" Relationship="zmanageproject.srv.service.ZMANAGEPROJECTSRV.EMPLOYEES_ORG_ID" FromRole="ORGANISATIONS" ToRole="EMPLOYEES"/>
+            </EntityType>
+            <EntityType Name="EMPLOYEES">
+                <Key>
+                    <PropertyRef Name="EMP_ID"/>
+                </Key>
+                <Property Name="EMP_ID" Type="Edm.String" Nullable="false"/>
+                <Property Name="EMP_NAME" Type="Edm.String"/>
+                <Property Name="EMP_EXPERIENCE" Type="Edm.String"/>
+                <Property Name="EMP_SALARY" Type="Edm.Int32"/>
+                <NavigationProperty Name="PRJ_ID" Relationship="zmanageproject.srv.service.ZMANAGEPROJECTSRV.EMPLOYEES_PRJ_ID" FromRole="EMPLOYEES" ToRole="PROJECTS"/>
+                <Property Name="PRJ_ID_PRJ_ID" Type="Edm.String"/>
+                <NavigationProperty Name="ORG_ID" Relationship="zmanageproject.srv.service.ZMANAGEPROJECTSRV.EMPLOYEES_ORG_ID" FromRole="EMPLOYEES" ToRole="ORGANISATIONS"/>
+                <Property Name="ORG_ID_ORG_ID" Type="Edm.String"/>
+            </EntityType>
+            <EntityType Name="MODULES">
+                <Key>
+                    <PropertyRef Name="MODULE_ID"/>
+                </Key>
+                <Property Name="MODULE_ID" Type="Edm.String" Nullable="false"/>
+                <Property Name="MODULE_NAME" Type="Edm.String"/>
+                <Property Name="MODULE_TYPE" Type="Edm.String"/>
+            </EntityType>
+            <ComplexType Name="object"/>
+            <ComplexType Name="return_zmanageproject_srv_service_ZMANAGEPROJECTSRV_readProject"/>
+            <Association Name="TASKS_PRJ_ID">
+                <End Role="TASKS" Type="zmanageproject.srv.service.ZMANAGEPROJECTSRV.TASKS" Multiplicity="*"/>
+                <End Role="PROJECTS" Type="zmanageproject.srv.service.ZMANAGEPROJECTSRV.PROJECTS" Multiplicity="0..1"/>
+                <ReferentialConstraint>
+                    <Principal Role="PROJECTS">
+                        <PropertyRef Name="PRJ_ID"/>
+                    </Principal>
+                    <Dependent Role="TASKS">
+                        <PropertyRef Name="PRJ_ID_PRJ_ID"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name="EMPLOYEES_PRJ_ID">
+                <End Role="EMPLOYEES" Type="zmanageproject.srv.service.ZMANAGEPROJECTSRV.EMPLOYEES" Multiplicity="*"/>
+                <End Role="PROJECTS" Type="zmanageproject.srv.service.ZMANAGEPROJECTSRV.PROJECTS" Multiplicity="0..1"/>
+                <ReferentialConstraint>
+                    <Principal Role="PROJECTS">
+                        <PropertyRef Name="PRJ_ID"/>
+                    </Principal>
+                    <Dependent Role="EMPLOYEES">
+                        <PropertyRef Name="PRJ_ID_PRJ_ID"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name="EMPLOYEES_ORG_ID">
+                <End Role="EMPLOYEES" Type="zmanageproject.srv.service.ZMANAGEPROJECTSRV.EMPLOYEES" Multiplicity="*"/>
+                <End Role="ORGANISATIONS" Type="zmanageproject.srv.service.ZMANAGEPROJECTSRV.ORGANISATIONS" Multiplicity="0..1"/>
+                <ReferentialConstraint>
+                    <Principal Role="ORGANISATIONS">
+                        <PropertyRef Name="ORG_ID"/>
+                    </Principal>
+                    <Dependent Role="EMPLOYEES">
+                        <PropertyRef Name="ORG_ID_ORG_ID"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Annotations Target="zmanageproject.srv.service.ZMANAGEPROJECTSRV.PROJECTS/createdAt" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                <Annotation Term="Core.Immutable" Bool="true"/>
+                <Annotation Term="Core.Computed" Bool="true"/>
+                <Annotation Term="Common.Label" String="Created On"/>
+            </Annotations>
+            <Annotations Target="zmanageproject.srv.service.ZMANAGEPROJECTSRV.PROJECTS/createdBy" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                <Annotation Term="Core.Immutable" Bool="true"/>
+                <Annotation Term="Core.Computed" Bool="true"/>
+                <Annotation Term="Core.Description" String="User's unique ID"/>
+                <Annotation Term="Common.Label" String="Created By"/>
+            </Annotations>
+            <Annotations Target="zmanageproject.srv.service.ZMANAGEPROJECTSRV.PROJECTS/modifiedAt" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                <Annotation Term="Core.Computed" Bool="true"/>
+                <Annotation Term="Common.Label" String="Changed On"/>
+            </Annotations>
+            <Annotations Target="zmanageproject.srv.service.ZMANAGEPROJECTSRV.PROJECTS/modifiedBy" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                <Annotation Term="Core.Computed" Bool="true"/>
+                <Annotation Term="Core.Description" String="User's unique ID"/>
+                <Annotation Term="Common.Label" String="Changed By"/>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>
